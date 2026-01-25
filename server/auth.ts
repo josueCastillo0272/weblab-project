@@ -1,7 +1,7 @@
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { NextFunction, Request, Response } from "express";
+import { User as UserInterface } from "../shared/types";
 import User from "./models/User";
-import UserInterface from "../shared/User";
 
 // create a new OAuth client used to verify google sign-in
 const CLIENT_ID = "482293298213-1h679p3jh12e767tri4nbtnffig940mf.apps.googleusercontent.com";

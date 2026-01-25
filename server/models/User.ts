@@ -1,20 +1,11 @@
 import { Schema, model, Document } from "mongoose";
-
+import { User } from "../../shared/types";
 const UserSchema = new Schema({
   username: String,
   googleid: String,
-  profilepicture: {type: String, default: "default"}, // Imgur link
-  bio: {type: String, default: ""}
-});
-
-export interface User extends Document {
-  name: string;
-  googleid: string;
-  _id: string;
-  profilepicture: string
-  default: string
-}
-
+  profilepicture: { type: String, default: "default" }, // Imgur link
+  bio: { type: String, default: "" },
+}).index({ username: "text" });
 const UserModel = model<User>("User", UserSchema);
 
 export default UserModel;

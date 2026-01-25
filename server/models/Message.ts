@@ -7,7 +7,6 @@ const MessageSchema = new Schema({
   text: { type: String, required: true },
   isGIF: { type: Boolean, default: false },
   timestamp: { type: Date, default: Date.now },
-});
-
+}).index({ sender: 1, recipient: 1 });
 const MessageModel = model<Message>("Message", MessageSchema);
 export default MessageModel;

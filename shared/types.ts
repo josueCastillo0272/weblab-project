@@ -1,3 +1,15 @@
+import { Document } from "mongoose";
+// User types
+
+export interface User extends Document {
+  name: string;
+  googleid: string;
+  _id: string;
+  profilepicture: string;
+  default: string;
+}
+
+// Message types
 export interface Message {
   sender: string;
   recipient: string;
