@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 // Routing for modularity
 router.use("/", require("./routes/auth").default);
+router.use("/", require("./routes/message").default);
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

@@ -4,11 +4,15 @@ import "./NotFound.css";
 
 const NotFound = () => {
   return (
-    <div className="notfound-container">
-      <div className="notfound-content">
-        <h1 className="notfound-title">Sorry, this page is not available</h1>
-        <Link to="/home" className="notfound-back">
-          Go back to home
+    <div className="error-view">
+      <div className="error-overlay">
+        <h1 className="error-message">
+          404
+          <br />
+          Page not found
+        </h1>
+        <Link to="/home" className="error-home-link">
+          Go Back to SideQuest
         </Link>
       </div>
     </div>

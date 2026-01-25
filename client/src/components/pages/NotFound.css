@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Syne:wght@800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@700&display=swap");
 
 .error-view {
   position: fixed;
@@ -15,7 +15,7 @@
   text-align: center;
   mix-blend-mode: difference;
   color: white;
-  padding: 40px;
+  padding: 50px;
   width: 100%;
 }
 
@@ -23,7 +23,7 @@
   font-family: "Syne", sans-serif;
   font-size: clamp(3rem, 12vw, 9rem);
   font-weight: 800;
-  line-height: 0.8;
+  line-height: 1;
   text-transform: uppercase;
   margin-bottom: 3rem;
   letter-spacing: -0.05em;
@@ -35,7 +35,6 @@
   color: white;
   text-decoration: none;
   border-bottom: 2px solid white;
-  padding-bottom: 4px;
   transition:
     opacity 0.3s ease,
     transform 0.3s ease;

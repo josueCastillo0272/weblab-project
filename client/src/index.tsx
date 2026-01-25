@@ -13,7 +13,7 @@ import RequireAuth from "./components/RequireAuth";
 import NotFound from "./components/pages/NotFound";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { createRoot } from "react-dom/client";
-import { Navigate, createBrowserRouter, RouterProvider, useOutletContext } from "react-router-dom";
+import { Navigate, createBrowserRouter, RouterProvider } from "react-router-dom";
 
 export const router = createBrowserRouter([
   {
@@ -35,11 +35,11 @@ export const router = createBrowserRouter([
               { path: "leaderboard", element: <Leaderboard /> },
               { path: "quests", element: <Quests /> },
               { path: "profile/:username", element: <Profile /> },
-              { path: "*", element: <NotFound /> },
             ],
           },
         ],
       },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
