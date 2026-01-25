@@ -1,6 +1,7 @@
 import type http from "http";
 import { Server, Socket } from "socket.io";
 import User from "../shared/User";
+import { getChatRoomId } from "./services/ChatSocket";
 let io: Server;
 const userToSocketMap: Map<string, Socket> = new Map<string, Socket>(); // maps user ID to socket object
 const socketToUserMap: Map<string, User> = new Map<string, User>(); // maps socket ID to user object
@@ -12,8 +13,6 @@ export const getSocketFromSocketID = (socketid: string) => io.sockets.sockets.ge
 export const addUser = (user: User, socket: Socket): void => {
   const oldSocket = userToSocketMap.get(user._id);
   if (oldSocket && oldSocket.id !== socket.id) {
-    // there was an old tab open for this user, force it to disconnect
-    // TODO(weblab student): is this the behavior you want?
     oldSocket.disconnect();
     socketToUserMap.delete(oldSocket.id);
   }
@@ -34,6 +33,15 @@ export const init = (server: http.Server): void => {
       console.log(`socket has disconnected ${socket.id}`);
       const user = getUserFromSocketID(socket.id);
       if (user !== undefined) removeUser(user, socket);
+    });
+
+    // Chatroom
+    socket.on("join_chat", (data) => {
+      console.log(`Joined chat room`);
+      const user: User | undefined = getUserFromSocketID(socket.id);
+      if (user === undefined) return;
+      const chatroomId: string = getChatRoomId(user._id, data.recipientId);
+      socket.join(chatroomId);
     });
   });
 };

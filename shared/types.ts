@@ -1,6 +1,6 @@
 export interface Message {
-  senderid: string;
-  recipientid: string;
+  sender: string;
+  recipient: string;
   read: boolean;
   text: string;
   _id: string;
