@@ -138,4 +138,22 @@ router.get("/status/:recipient", auth.ensureLoggedIn, async (req, res) => {
     res.status(500).send({ error: "Failed to find chat status." });
   }
 });
+
+// Read status messages
+router.get("/read", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const { recipientid } = req.body;
+    const senderid = req.user._id;
+
+    await MSG.updateMany(
+      { sender: recipientid, recipient: senderid, read: false },
+      { $set: { read: true } }
+    );
+    ChatSocket.sendReadReciept(recipientid, senderid);
+    res.send({});
+  } catch (error) {
+    res.status(500).send({ error: "Failed to determine read status." });
+  }
+});
+
 export default router;

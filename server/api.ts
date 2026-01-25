@@ -2,13 +2,17 @@ import express from "express";
 const router = express.Router();
 // Routing for modularity
 
+// Auth API
 // Contains: login, logout, whoami, initsocket
 router.use("/", require("./routes/auth").default);
 
+// Chat API
 // Contains: /history, /message
 router.use("/", require("./routes/chat").default);
 
-// Contains
+// User API (beyond logging in / out)
+// Contains:
+router.use("/", require("./routes/user").default);
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

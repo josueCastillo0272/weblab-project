@@ -4,7 +4,7 @@ import { CredentialResponse, GoogleOAuthProvider } from "@react-oauth/google";
 import { Outlet } from "react-router-dom";
 import { get, post } from "../utilities";
 import { socket } from "../client-socket";
-import User from "../../../shared/User";
+import { User } from "../../../shared/types";
 import "../utilities.css";
 import { AuthContext } from "../types";
 const App = () => {

@@ -3,6 +3,7 @@ import { Document } from "mongoose";
 
 export interface User extends Document {
   name: string;
+  username: string;
   googleid: string;
   _id: string;
   profilepicture: string;
