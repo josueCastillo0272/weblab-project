@@ -13,13 +13,6 @@ import RequireAuth from "./components/RequireAuth";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { createRoot } from "react-dom/client";
 import { Navigate, createBrowserRouter, RouterProvider, useOutletContext } from "react-router-dom";
-import type { AuthContext } from "./components/App";
-
-// function RootRedirect() {
-//   const { userId } = useOutletContext<AuthContext>();
-//   const { Navigate } = require("react-router-dom");
-//   return <Navigate to={userId ? "/home" : "/login"} replace />;
-// }
 
 export const router = createBrowserRouter([
   {
