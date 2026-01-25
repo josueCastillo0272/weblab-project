@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate, Outlet, useLocation, useOutletContext } from "react-router-dom";
-import type { AuthContext } from "./App";
+import { AuthContext } from "../types";
 
 export default function RequireAuth() {
   const { userId } = useOutletContext<AuthContext>();

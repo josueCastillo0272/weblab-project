@@ -1,10 +1,43 @@
-import React from "react";
-import { Outlet } from "react-router";
+import React, { useState, useContext } from "react";
+import SidebarContext from "./SidebarContext";
+import SidebarNav from "./SidebarNav/SidebarNav";
+import SidebarNotifications from "./SidebarNotifications";
+import SidebarMessages from "./SidebarMessages";
+import "./Sidebar.css";
+import { SidebarMode } from "../../../types";
 
 const Sidebar = () => {
+  const context = useContext(SidebarContext);
+  const [lastActiveState, setLastActiveState] = useState<SidebarMode>("normal");
+
+  if (!context) return null;
+
+  const { state, setState } = context;
+
+  const handleToggle = () => {
+    if (state === "hidden") {
+      setState(lastActiveState);
+    } else {
+      setLastActiveState(state);
+      setState("hidden");
+    }
+  };
+
   return (
-    <div>
-      <p>Sidebar</p>
+    <div className={`sidebar-container ${state}`}>
+      {(state === "normal" || state === "hidden") && <SidebarNav />}
+      {state === "notifs" && <SidebarNotifications />}
+      {state === "msgs" && <SidebarMessages />}
+
+      <div className="sidebar-toggle" onClick={handleToggle}>
+        <img
+          src={`https://img.icons8.com/material-rounded/48/000000/${
+            state === "hidden" ? "chevron-right" : "chevron-left"
+          }.png`}
+          className="sidebar-icon"
+          alt="toggle"
+        />
+      </div>
     </div>
   );
 };

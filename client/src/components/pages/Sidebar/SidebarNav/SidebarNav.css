@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Aladin&family=Inter:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght,XOPQ,XTRA,YOPQ,YTDE,YTFI,YTLC,YTUC@8..144,100..1000,96,468,79,-203,738,514,712&display=swap");
+
+.sidebar-root {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sidebar-logo {
+  font-family: Aladin;
+  color: #fff;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 10px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-item span {
+  font-family: "Roboto Flex", sans-serif;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  overflow: hidden;
+}
+
+.sidebar-icon {
+  filter: invert(1);
+  pointer-events: none;
+}
+
+.sidebar-container.hidden .sidebar-logo {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.sidebar-container.hidden .sidebar-item span {
+  opacity: 0;
+  transform: translateX(10px);
+}

@@ -6,13 +6,7 @@ import { get, post } from "../utilities";
 import { socket } from "../client-socket";
 import User from "../../../shared/User";
 import "../utilities.css";
-
-export type AuthContext = {
-  userId?: string;
-  handleLogin: (credentialResponse: CredentialResponse) => void;
-  handleLogout: () => void;
-};
-
+import { AuthContext } from "../types";
 const App = () => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
 

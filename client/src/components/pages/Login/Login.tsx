@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useMemo } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { Navigate, useOutletContext } from "react-router-dom";
 import gsap from "gsap";
-import type { AuthContext } from "../../App";
+import { AuthContext } from "../../../types";
 import "./Login.css";
 
 const IMAGES: string[] = [

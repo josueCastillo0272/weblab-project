@@ -10,6 +10,7 @@ import Quests from "./components/pages/Quests/Quests";
 import Profile from "./components/pages/Profile/Profile";
 import AppLayout from "./components/pages/AppLayout";
 import RequireAuth from "./components/RequireAuth";
+import NotFound from "./components/pages/NotFound";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { createRoot } from "react-dom/client";
 import { Navigate, createBrowserRouter, RouterProvider, useOutletContext } from "react-router-dom";
@@ -27,7 +28,6 @@ export const router = createBrowserRouter([
           {
             element: <AppLayout />, // contains sidebar in here
             children: [
-              { index: true, element: <Navigate to="home" replace /> },
               { path: "home", element: <Home /> },
               { path: "newquest", element: <NewQuest /> },
               { path: "messages", element: <Messages /> },
@@ -35,7 +35,7 @@ export const router = createBrowserRouter([
               { path: "leaderboard", element: <Leaderboard /> },
               { path: "quests", element: <Quests /> },
               { path: "profile/:username", element: <Profile /> },
-              { path: "*", element: <div>Not Found</div> },
+              { path: "*", element: <NotFound /> },
             ],
           },
         ],
