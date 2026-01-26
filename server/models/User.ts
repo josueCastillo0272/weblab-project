@@ -6,7 +6,8 @@ const UserSchema = new Schema({
   googleid: String,
   profilepicture: {
     type: String,
-    default: "https://www.vhv.rs/dpng/d/312-3120300_default-profile-hd-png-download.png",
+    default:
+      "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg",
   },
   bio: { type: String, default: "" },
 }).index({ username: "text" });

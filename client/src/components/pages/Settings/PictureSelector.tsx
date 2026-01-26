@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./PictureSelector.css";
 interface Props {
   onPictureChange: (url: string) => void;
   currentUrl: string;

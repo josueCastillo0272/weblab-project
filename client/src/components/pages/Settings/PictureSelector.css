@@ -1,0 +1,77 @@
+/* Container for the selector */
+.picture-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 0;
+  align-items: center;
+}
+
+/* The Browse Button */
+.picture-selector button {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #aaa;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.picture-selector button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* The URL Input */
+.picture-selector input {
+  width: 100%;
+  background: #000;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.picture-selector input:focus {
+  border-color: #666;
+}
+
+.picture-selector input::placeholder {
+  color: #444;
+}
+
+/* The Image Preview (Modal-like) */
+.sleek-preview {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%; /* Circle looks more like a profile avatar */
+  border: 2px solid #333;
+  margin-top: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  animation: previewAppear 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Simple entry animation for the preview */
+@keyframes previewAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
