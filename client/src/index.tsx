@@ -33,6 +33,7 @@ export const router = createBrowserRouter([
               { path: "home", element: <Home /> },
               { path: "newquest", element: <NewQuest /> },
               { path: "messages", element: <Messages /> },
+              { path: "messages/:recipientId", element: <Messages /> },
               { path: "search", element: <Search /> },
               { path: "leaderboard", element: <Leaderboard /> },
               { path: "quests", element: <Quests /> },
@@ -53,6 +54,3 @@ createRoot(a).render(
     <RouterProvider router={router} />
   </GoogleOAuthProvider>
 );
-
-// https://reactrouter.com/6.30.3/routers/create-browser-router
-// https://react.dev/reference/react-dom/client/createRoot

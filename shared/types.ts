@@ -45,6 +45,7 @@ export interface Quest {
   _id: string;
   name: string;
   difficulty: Difficulty;
+  description: string;
 }
 
 // Video Related

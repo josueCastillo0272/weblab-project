@@ -3,6 +3,7 @@ import { Quest } from "../../shared/types";
 const QuestSchema = new Schema({
   name: { type: String, required: true },
   difficulty: { type: String, enum: ["Easy", "Medium", "Hard"], required: true },
+  description: { type: String, required: false },
 });
 
 const QuestModel = model<Quest>("Quest", QuestSchema);
