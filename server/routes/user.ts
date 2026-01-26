@@ -15,11 +15,15 @@ router.post("/update", auth.ensureLoggedIn, async (req, res) => {
       return res.status(400).send({ error: "Username taken" });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(currentUserId, {
-      username,
-      bio,
-      profilepicture,
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+      currentUserId,
+      {
+        username,
+        bio,
+        profilepicture,
+      },
+      { new: true }
+    );
     req.session.user = updatedUser;
 
     res.send({ success: true });

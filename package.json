@@ -6,7 +6,8 @@
     "dev": "vite",
     "start": "nodemon --watch 'server/**/*.ts' --exec ts-node server/server.ts",
     "preview": "vite preview",
-    "build": "vite build"
+    "build": "vite build",
+    "clear-db": "ts-node server/delete.ts"
   },
   "author": "johanc",
   "license": "MIT",
