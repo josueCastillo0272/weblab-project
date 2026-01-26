@@ -18,6 +18,8 @@ router.use("/user", require("./routes/user").default);
 // Contains: verify,
 router.use("/quest", require("./routes/quest").default);
 
+router.use("/gifs", require("./routes/gifs").default);
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   const msg = `Api route not found: ${req.method} ${req.url}`;
