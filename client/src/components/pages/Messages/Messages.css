@@ -30,6 +30,9 @@
   font-size: 0.95rem;
   line-height: 1.4;
   position: relative;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .message-me {

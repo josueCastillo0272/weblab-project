@@ -1,6 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SidebarContext from "../SidebarContext";
+import { get } from "../../../../utilities";
+import { socket } from "../../../../client-socket";
+import { ChatOverview } from "../../../../../../shared/types";
 import "./SidebarNav.css";
 
 const icons = [
@@ -16,6 +19,23 @@ const icons = [
 
 export default function SidebarNav({ overrideState }: { overrideState?: string }) {
   const context = useContext(SidebarContext);
+  const [unreadTotal, setUnreadTotal] = useState(0);
+
+  useEffect(() => {
+    const fetchUnread = () => {
+      get("/api/overview").then((data: ChatOverview[]) => {
+        const total = data.reduce((acc, curr) => acc + (curr.unread || 0), 0);
+        setUnreadTotal(total);
+      });
+    };
+
+    fetchUnread();
+    socket.on("message", fetchUnread);
+    return () => {
+      socket.off("message", fetchUnread);
+    };
+  }, []);
+
   if (!context) return null;
   const { state } = context;
   const visualState = overrideState || state;
@@ -26,11 +46,16 @@ export default function SidebarNav({ overrideState }: { overrideState?: string }
       <nav className="sidebar-nav">
         {icons.map((item) => (
           <Link key={item.name} to={item.path} className="sidebar-item">
-            <img
-              src={`https://img.icons8.com/material-rounded/48/000000/${item.suffix}.png`}
-              alt={item.name}
-              className="sidebar-icon"
-            />
+            <div className="sidebar-icon-container">
+              <img
+                src={`https://img.icons8.com/material-rounded/48/000000/${item.suffix}.png`}
+                alt={item.name}
+                className="sidebar-icon"
+              />
+              {item.name === "messages" && unreadTotal > 0 && (
+                <div className="sidebar-badge-global">{unreadTotal > 9 ? "9+" : unreadTotal}</div>
+              )}
+            </div>
             {visualState !== "hidden" && (
               <span>{item.name.charAt(0).toUpperCase() + item.name.slice(1)}</span>
             )}

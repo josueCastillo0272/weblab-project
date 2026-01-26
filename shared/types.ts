@@ -1,7 +1,6 @@
 import { CredentialResponse } from "@react-oauth/google";
 import { Document } from "mongoose";
 
-// User types
 export interface User extends Document {
   name: string;
   username: string;
@@ -12,7 +11,6 @@ export interface User extends Document {
   activequests: string[];
 }
 
-// Message types
 export interface Message {
   sender: string;
   recipient: string;
@@ -22,7 +20,7 @@ export interface Message {
   isGIF: boolean;
   timestamp?: Date;
 }
-// auth-related
+
 export type AuthContext = {
   userId?: string;
   user?: User;
@@ -30,7 +28,6 @@ export type AuthContext = {
   handleLogout: () => void;
 };
 
-//sidebar-related
 export type SidebarMode = "normal" | "notifs" | "msgs" | "hidden";
 
 export enum SocketEvent {
@@ -38,7 +35,22 @@ export enum SocketEvent {
   JOIN_CHAT,
 }
 
-// Quest Types
+export interface ChatOverview {
+  _id: string;
+  username: string;
+  profilepicture: string;
+  lastMessage: string;
+  lastMessageIsGIF: boolean;
+  timestamp: string;
+  unread: number;
+}
+
+export interface SearchResult {
+  _id: string;
+  username: string;
+  profilepicture: string;
+}
+
 export type Difficulty = "Easy" | "Medium" | "Hard";
 export type Verification = "Pending" | "Approved" | "Rejected";
 export interface Quest {
@@ -48,7 +60,6 @@ export interface Quest {
   description: string;
 }
 
-// Video Related
 export interface Video {
   videoid: string;
   userid: string;
