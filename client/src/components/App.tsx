@@ -9,6 +9,7 @@ import "../utilities.css";
 import { AuthContext } from "../../../shared/types";
 const App = () => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | undefined>(undefined);
   const navigate = useNavigate();
   useEffect(() => {
@@ -24,7 +25,8 @@ const App = () => {
         socket.on("connect", () => {
           post("/api/initsocket", { socketid: socket.id });
         })
-      );
+      )
+      .finally(() => setLoading(false));
   }, []);
 
   const handleLogin = (credentialResponse: CredentialResponse) => {
@@ -56,6 +58,7 @@ const App = () => {
     handleLogin,
     handleLogout,
   };
+  if (loading) return null;
 
   return <Outlet context={authContextValue} />;
 };

@@ -10,6 +10,7 @@ const UserSchema = new Schema({
       "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg",
   },
   bio: { type: String, default: "" },
+  activequests: { type: [String], default: [] },
 }).index({ username: "text" });
 const UserModel = model<User>("User", UserSchema);
 

@@ -4,7 +4,7 @@ import SidebarNav from "./SidebarNav/SidebarNav";
 import SidebarNotifications from "./SidebarNotifications";
 import SidebarMessages from "./SidebarMessages";
 import "./Sidebar.css";
-import { SidebarMode } from "../../../types";
+import { SidebarMode } from "../../../../../shared/types";
 
 const Sidebar = () => {
   const context = useContext(SidebarContext);

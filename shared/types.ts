@@ -1,7 +1,7 @@
 import { CredentialResponse } from "@react-oauth/google";
 import { Document } from "mongoose";
-// User types
 
+// User types
 export interface User extends Document {
   name: string;
   username: string;
@@ -9,6 +9,7 @@ export interface User extends Document {
   _id: string;
   profilepicture: string;
   default: string;
+  activequests: string[];
 }
 
 // Message types
@@ -35,4 +36,25 @@ export type SidebarMode = "normal" | "notifs" | "msgs" | "hidden";
 export enum SocketEvent {
   MESSAGE_RECEIVED,
   JOIN_CHAT,
+}
+
+// Quest Types
+export type Difficulty = "Easy" | "Medium" | "Hard";
+export type Verification = "Pending" | "Approved" | "Rejected";
+export interface Quest {
+  _id: string;
+  name: string;
+  difficulty: Difficulty;
+}
+
+// Video Related
+export interface Video {
+  videoid: string;
+  userid: string;
+  verified: boolean;
+  questid: string;
+  videourl: string;
+  _id: string;
+  verification_status: Verification;
+  timestamp?: Date;
 }
