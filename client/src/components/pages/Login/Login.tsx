@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useMemo } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { Navigate, useOutletContext } from "react-router-dom";
 import gsap from "gsap";
-import { AuthContext } from "../../../types";
+import { AuthContext } from "../../../../../shared/types";
 import "./Login.css";
 
 const IMAGES: string[] = [
@@ -43,7 +43,7 @@ function shuffle<T>(arr: readonly T[]): T[] {
 }
 
 export default function Login() {
-  const { handleLogin, userId } = useOutletContext<AuthContext>();
+  const { handleLogin, userId, user } = useOutletContext<AuthContext>();
   const comp = useRef<HTMLDivElement>(null);
   const shuffledImages = useMemo(() => shuffle(IMAGES), []);
 
@@ -99,7 +99,13 @@ export default function Login() {
     return () => ctx.revert();
   }, []);
 
-  if (userId) return <Navigate to="/home" replace />;
+  if (userId) {
+    if (user?.username) {
+      return <Navigate to="/home" replace />;
+    } else {
+      return <Navigate to="/signup" replace />;
+    }
+  }
 
   return (
     <div ref={comp} className="login-root">

@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { CredentialResponse, GoogleOAuthProvider } from "@react-oauth/google";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { get, post } from "../utilities";
 import { socket } from "../client-socket";
 import { User } from "../../../shared/types";
 import "../utilities.css";
-import { AuthContext } from "../types";
+import { AuthContext } from "../../../shared/types";
 const App = () => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
-
+  const [user, setUser] = useState<User | undefined>(undefined);
+  const navigate = useNavigate();
   useEffect(() => {
     get("/api/whoami")
       .then((user: User) => {
         if (user._id) {
-          // They are registed in the database and currently logged in.
           setUserId(user._id);
+          setUser(user);
+          if (!user.username) navigate("/signup");
         }
       })
       .then(() =>
@@ -28,19 +30,34 @@ const App = () => {
   const handleLogin = (credentialResponse: CredentialResponse) => {
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken as string) as { name: string; email: string };
+
     console.log(`Logged in as ${decodedCredential.name}`);
     post("/api/login", { token: userToken }).then((user) => {
       setUserId(user._id);
+      setUser(user);
       post("/api/initsocket", { socketid: socket.id });
+      if (!user.username) {
+        navigate("/signup");
+      } else {
+        navigate("/home");
+      }
     });
   };
 
   const handleLogout = () => {
     setUserId(undefined);
+    setUser(undefined);
     post("/api/logout");
   };
 
-  return <Outlet context={{ handleLogin, handleLogout, userId } satisfies AuthContext} />;
+  const authContextValue: AuthContext = {
+    userId: user?._id,
+    user,
+    handleLogin,
+    handleLogout,
+  };
+
+  return <Outlet context={authContextValue} />;
 };
 
 export default App;

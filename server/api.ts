@@ -12,7 +12,7 @@ router.use("/", require("./routes/chat").default);
 
 // User API (beyond logging in / out)
 // Contains:
-router.use("/", require("./routes/user").default);
+router.use("/user", require("./routes/user").default);
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

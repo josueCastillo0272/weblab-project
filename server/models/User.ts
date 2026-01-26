@@ -4,7 +4,10 @@ const UserSchema = new Schema({
   name: { type: String, required: true },
   username: { type: String, unique: true },
   googleid: String,
-  profilepicture: { type: String, default: "default" }, // Imgur link
+  profilepicture: {
+    type: String,
+    default: "https://www.vhv.rs/dpng/d/312-3120300_default-profile-hd-png-download.png",
+  },
   bio: { type: String, default: "" },
 }).index({ username: "text" });
 const UserModel = model<User>("User", UserSchema);

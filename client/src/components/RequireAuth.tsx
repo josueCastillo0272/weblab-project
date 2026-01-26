@@ -1,7 +1,6 @@
 import React from "react";
 import { Navigate, Outlet, useLocation, useOutletContext } from "react-router-dom";
-import { AuthContext } from "../types";
-
+import { AuthContext } from "../../../shared/types";
 export default function RequireAuth() {
   const { userId } = useOutletContext<AuthContext>();
   const location = useLocation();

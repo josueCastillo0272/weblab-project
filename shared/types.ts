@@ -1,3 +1,4 @@
+import { CredentialResponse } from "@react-oauth/google";
 import { Document } from "mongoose";
 // User types
 
@@ -20,6 +21,16 @@ export interface Message {
   isGIF: boolean;
   timestamp?: Date;
 }
+// auth-related
+export type AuthContext = {
+  userId?: string;
+  user?: User;
+  handleLogin: (credentialResponse: CredentialResponse) => void;
+  handleLogout: () => void;
+};
+
+//sidebar-related
+export type SidebarMode = "normal" | "notifs" | "msgs" | "hidden";
 
 export enum SocketEvent {
   MESSAGE_RECEIVED,
