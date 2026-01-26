@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { useParams, useOutletContext } from "react-router-dom";
 import { get, post } from "../../../utilities";
 import { socket } from "../../../client-socket";
-import { Message, User, AuthContext } from "../../../../../shared/types";
+import { Message, AuthContext } from "../../../../../shared/types";
 import SidebarContext from "../Sidebar/SidebarContext";
+import GifPicker from "../../modules/GifPicker";
 
 export default function Messages() {
   const { recipientId } = useParams();
@@ -12,6 +13,7 @@ export default function Messages() {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
+  const [showGifPicker, setShowGifPicker] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -20,24 +22,16 @@ export default function Messages() {
     }
   }, [sidebarContext]);
 
-  // fetch message history
   useEffect(() => {
-    if (recipientId) {
-      get("/api/history", { recipient: recipientId }).then((msgs) => {
-        setMessages(msgs);
-      });
-
+    if (recipientId && user?._id) {
+      get("/api/history", { recipient: recipientId }).then((msgs) => setMessages(msgs));
       post("/api/read", { recipientid: recipientId });
+      socket.emit("join-chat", { recipientId });
     }
-  }, [recipientId]);
-
-  // auto-scroll bottom
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, [recipientId, user?._id]);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
@@ -49,29 +43,23 @@ export default function Messages() {
         setMessages((prev) => [...prev, msg]);
       }
     };
-
     socket.on("message", handleMessage);
     return () => {
       socket.off("message", handleMessage);
     };
   }, [recipientId, user]);
 
-  const handleSendMessage = () => {
-    if (!inputText.trim() || !recipientId) return;
+  const handleSendMessage = (text: string, isGIF: boolean = false) => {
+    if (!recipientId) return;
+    if (!isGIF && !text.trim()) return;
 
-    post("/api/message", { recipientid: recipientId, text: inputText }).then((msg) => {
-      // setMessages((prev) => [...prev, msg]);
-      setInputText("");
+    post("/api/message", { recipientid: recipientId, text, isGIF }).then(() => {
+      if (!isGIF) setInputText("");
+      setShowGifPicker(false);
     });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSendMessage();
-    }
-  };
-
-  if (!recipientId) {
+  if (!recipientId)
     return (
       <div
         style={{
@@ -82,16 +70,16 @@ export default function Messages() {
           color: "#666",
         }}
       >
-        <p>Select a conversation from the sidebar to start chatting</p>
+        Select a conversation
       </div>
     );
-  }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
       <div style={{ padding: "16px", borderBottom: "1px solid #333", background: "#1a1a1a" }}>
         <strong>Chat</strong>
       </div>
+
       <div
         style={{
           flexGrow: 1,
@@ -118,7 +106,15 @@ export default function Messages() {
                 borderBottomLeftRadius: isMe ? "12px" : "2px",
               }}
             >
-              <div>{msg.text}</div>
+              {msg.isGIF ? (
+                <img
+                  src={msg.text}
+                  alt="GIF"
+                  style={{ width: "150px", height: "auto", borderRadius: "8px", display: "block" }}
+                />
+              ) : (
+                <div>{msg.text}</div>
+              )}
               {msg.timestamp && (
                 <div
                   style={{ fontSize: "0.7em", opacity: 0.7, marginTop: "4px", textAlign: "right" }}
@@ -142,13 +138,35 @@ export default function Messages() {
           background: "#1a1a1a",
           display: "flex",
           gap: "10px",
+          alignItems: "center",
         }}
       >
+        {showGifPicker && (
+          <GifPicker
+            onSelect={(url) => handleSendMessage(url, true)}
+            onClose={() => setShowGifPicker(false)}
+          />
+        )}
+        <button
+          onClick={() => setShowGifPicker(!showGifPicker)}
+          style={{
+            background: showGifPicker ? "#444" : "transparent",
+            border: "1px solid #555",
+            color: "white",
+            borderRadius: "4px",
+            padding: "5px 10px",
+            cursor: "pointer",
+            fontSize: "0.8rem",
+            fontWeight: "bold",
+          }}
+        >
+          GIF
+        </button>
         <input
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={(e) => e.key === "Enter" && handleSendMessage(inputText)}
           placeholder="Type a message..."
           style={{
             flexGrow: 1,
@@ -160,7 +178,7 @@ export default function Messages() {
           }}
         />
         <button
-          onClick={handleSendMessage}
+          onClick={() => handleSendMessage(inputText)}
           style={{
             padding: "10px 20px",
             borderRadius: "20px",

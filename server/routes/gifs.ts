@@ -31,7 +31,7 @@ router.get("/search", auth.ensureLoggedIn, async (req, res) => {
     const json = await response.json();
     if (!json.result || !json.data || !json.data.data) return res.send([]);
 
-    const gifList = json.data.data.data.map((item: any) => {
+    const gifList = json.data.data.map((item: any) => {
       const media = item.file;
       if (!media) return null;
 
@@ -44,6 +44,7 @@ router.get("/search", auth.ensureLoggedIn, async (req, res) => {
     const clean = gifList.filter((url): url is string => url !== null);
     res.send(clean);
   } catch (error) {
+    console.error("GIF Fetch Error:", error);
     return res.status(500).send({ error: "Failed to fetch gifs" });
   }
 });

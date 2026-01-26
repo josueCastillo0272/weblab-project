@@ -30,7 +30,7 @@ router.get("/history", auth.ensureLoggedIn, async (req, res) => {
 // Sends message
 router.post("/message", auth.ensureLoggedIn, async (req, res) => {
   try {
-    const { recipientid, text } = req.body;
+    const { recipientid, text, isGIF } = req.body;
     if (!req.user || !req.user._id)
       return res.status(401).send({ error: "User/ User ID was not found" });
     const sender: string = req.user._id;
@@ -38,6 +38,7 @@ router.post("/message", auth.ensureLoggedIn, async (req, res) => {
       sender: sender,
       recipient: recipientid,
       text: text,
+      isGIF: isGIF || false,
       timestamp: new Date(),
     });
 
@@ -140,7 +141,7 @@ router.get("/status/:recipient", auth.ensureLoggedIn, async (req, res) => {
 });
 
 // Read status messages
-router.get("/read", auth.ensureLoggedIn, async (req, res) => {
+router.post("/read", auth.ensureLoggedIn, async (req, res) => {
   try {
     const { recipientid } = req.body;
     const senderid = req.user._id;
