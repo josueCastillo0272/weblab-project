@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext, useLayoutEffect } from "react";
 import { useParams, useOutletContext } from "react-router-dom";
 import { get, post } from "../../../utilities";
 import { socket } from "../../../client-socket";
 import { Message, AuthContext } from "../../../../../shared/types";
 import SidebarContext from "../Sidebar/SidebarContext";
 import GifPicker from "../../modules/GifPicker";
+import "./Messages.css";
 
 export default function Messages() {
   const { recipientId } = useParams();
@@ -16,29 +17,46 @@ export default function Messages() {
   const [showGifPicker, setShowGifPicker] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Sidebar Logic
   useEffect(() => {
     if (sidebarContext && sidebarContext.state !== "msgs") {
       sidebarContext.setState("msgs");
     }
   }, [sidebarContext]);
 
+  // Load History and Initial Join
   useEffect(() => {
     if (recipientId && user?._id) {
       get("/api/history", { recipient: recipientId }).then((msgs) => setMessages(msgs));
       post("/api/read", { recipientid: recipientId });
+
       socket.emit("join-chat", { recipientId });
     }
   }, [recipientId, user?._id]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    const handleConnect = () => {
+      if (recipientId && user?._id) {
+        console.log("Socket reconnected, re-joining room");
+        socket.emit("join-chat", { recipientId });
+      }
+    };
+    socket.on("connect", handleConnect);
+    return () => {
+      socket.off("connect", handleConnect);
+    };
+  }, [recipientId, user?._id]);
+
+  useLayoutEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  }, [messages, recipientId]);
 
   useEffect(() => {
     const handleMessage = (msg: Message) => {
+      const uId = user?._id?.toString();
       if (
-        (msg.sender === recipientId && msg.recipient === user?._id) ||
-        (msg.sender === user?._id && msg.recipient === recipientId)
+        (msg.sender === recipientId && msg.recipient === uId) ||
+        (msg.sender === uId && msg.recipient === recipientId)
       ) {
         setMessages((prev) => [...prev, msg]);
       }
@@ -59,66 +77,31 @@ export default function Messages() {
     });
   };
 
-  if (!recipientId)
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100%",
-          color: "#666",
-        }}
-      >
-        Select a conversation
-      </div>
-    );
+  if (!recipientId) return <div className="empty-chat">Select a conversation</div>;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
-      <div style={{ padding: "16px", borderBottom: "1px solid #333", background: "#1a1a1a" }}>
+    <div className="chat-container">
+      <div className="chat-header">
         <strong>Chat</strong>
       </div>
 
-      <div
-        style={{
-          flexGrow: 1,
-          overflowY: "auto",
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-        }}
-      >
+      <div className="chat-messages-area">
         {messages.map((msg, i) => {
           const isMe = msg.sender === user?._id;
           return (
             <div
               key={msg._id || i}
-              style={{
-                alignSelf: isMe ? "flex-end" : "flex-start",
-                maxWidth: "70%",
-                padding: "10px 14px",
-                borderRadius: "12px",
-                backgroundColor: isMe ? "#007bff" : "#333",
-                color: "#fff",
-                borderBottomRightRadius: isMe ? "2px" : "12px",
-                borderBottomLeftRadius: isMe ? "12px" : "2px",
-              }}
+              className={`message-bubble ${isMe ? "message-me" : "message-them"} ${
+                msg.isGIF ? "gif-container" : "message-text"
+              }`}
             >
               {msg.isGIF ? (
-                <img
-                  src={msg.text}
-                  alt="GIF"
-                  style={{ width: "150px", height: "auto", borderRadius: "8px", display: "block" }}
-                />
+                <img src={msg.text} alt="GIF" className="gif-image" />
               ) : (
                 <div>{msg.text}</div>
               )}
               {msg.timestamp && (
-                <div
-                  style={{ fontSize: "0.7em", opacity: 0.7, marginTop: "4px", textAlign: "right" }}
-                >
+                <div className="message-timestamp">
                   {new Date(msg.timestamp).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -131,16 +114,7 @@ export default function Messages() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div
-        style={{
-          padding: "20px",
-          borderTop: "1px solid #333",
-          background: "#1a1a1a",
-          display: "flex",
-          gap: "10px",
-          alignItems: "center",
-        }}
-      >
+      <div className="chat-input-area">
         {showGifPicker && (
           <GifPicker
             onSelect={(url) => handleSendMessage(url, true)}
@@ -148,46 +122,20 @@ export default function Messages() {
           />
         )}
         <button
+          className={`gif-button ${showGifPicker ? "active" : ""}`}
           onClick={() => setShowGifPicker(!showGifPicker)}
-          style={{
-            background: showGifPicker ? "#444" : "transparent",
-            border: "1px solid #555",
-            color: "white",
-            borderRadius: "4px",
-            padding: "5px 10px",
-            cursor: "pointer",
-            fontSize: "0.8rem",
-            fontWeight: "bold",
-          }}
         >
           GIF
         </button>
         <input
+          className="chat-input"
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSendMessage(inputText)}
           placeholder="Type a message..."
-          style={{
-            flexGrow: 1,
-            padding: "10px",
-            borderRadius: "20px",
-            border: "1px solid #555",
-            background: "#2a2a2a",
-            color: "white",
-          }}
         />
-        <button
-          onClick={() => handleSendMessage(inputText)}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "20px",
-            border: "none",
-            background: "#007bff",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
+        <button className="send-button" onClick={() => handleSendMessage(inputText)}>
           Send
         </button>
       </div>

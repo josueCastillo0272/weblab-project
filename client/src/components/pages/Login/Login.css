@@ -116,3 +116,20 @@ img {
   display: flex;
   justify-content: center;
 }
+.minimal-about-link {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.3s;
+  text-align: center;
+  display: block;
+  font-family: "Aladin", sans-serif;
+  font-weight: 400;
+}
+
+.minimal-about-link:hover {
+  color: rgba(255, 255, 255, 0.8);
+}

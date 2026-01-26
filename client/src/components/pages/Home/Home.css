@@ -1,6 +1,69 @@
-.home-root {
+.home-container {
   display: flex;
-  align-items: end;
-  justify-content: end;
+  height: 100%;
+  width: 100%;
+  background-color: #ffffff;
+  color: #000000;
+  position: relative;
+  overflow: hidden;
+}
+
+.feed-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.feed-item {
+  background: #f9f9f9;
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  padding: 16px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.home-right-panel {
+  width: 300px;
+  border-left: 1px solid #eaeaea;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.new-quest-fab {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #007aff;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
+  z-index: 100;
+  border: none;
+  cursor: pointer;
+}
+
+.new-quest-fab:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.new-quest-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
 }

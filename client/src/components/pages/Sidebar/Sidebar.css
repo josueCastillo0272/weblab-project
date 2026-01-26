@@ -1,7 +1,7 @@
 .sidebar-container {
   position: relative;
   height: 100vh;
-  background-color: #0d0d0d;
+  background-color: #ffffff;
   transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   display: flex;
   flex-direction: column;
@@ -42,5 +42,5 @@
 .sidebar-container .sidebar-icon {
   width: 18px;
   height: 18px;
-  filter: invert(1);
+  /* filter: invert(1); */
 }

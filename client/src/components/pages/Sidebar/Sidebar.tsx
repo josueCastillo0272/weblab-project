@@ -1,17 +1,31 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import SidebarContext from "./SidebarContext";
 import SidebarNav from "./SidebarNav/SidebarNav";
 import SidebarNotifications from "./SidebarNotifications";
-import SidebarMessages from "./SidebarMessages";
+import SidebarMessages from "./SidebarMessages/SidebarMessages";
 import "./Sidebar.css";
 import { SidebarMode } from "../../../../../shared/types";
 
 const Sidebar = () => {
   const context = useContext(SidebarContext);
   const [lastActiveState, setLastActiveState] = useState<SidebarMode>("normal");
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!context) return;
+    if (location.pathname.startsWith("/messages")) {
+      if (context.state !== "msgs" && context.state !== "hidden") {
+        context.setState("msgs");
+      }
+    } else {
+      if (context.state === "msgs") {
+        context.setState("normal");
+      }
+    }
+  }, [location.pathname]);
 
   if (!context) return null;
-
   const { state, setState } = context;
 
   const handleToggle = () => {

@@ -1,6 +1,7 @@
 import { Message } from "../../shared/types";
-import { getIo, getSocketFromSocketID, getSocketFromUserID } from "../server-socket";
+import { getIo } from "../server-socket";
 import { Server } from "socket.io";
+
 export function getChatRoomId(userAId: string, userBId: string): string {
   const ret = userAId < userBId ? [userAId, userBId] : [userBId, userAId];
   return "room-" + ret.join("_");
@@ -8,12 +9,11 @@ export function getChatRoomId(userAId: string, userBId: string): string {
 
 export function sendMessageToRoom(recipientId: string, senderId: string, messageData: Message) {
   const chatroom: string = getChatRoomId(recipientId, senderId);
-  let io: Server = getIo();
-
+  const io: Server = getIo();
   io.to(chatroom).emit("message", messageData);
 }
 
 export function sendReadReciept(recipientId: string, senderId: string) {
-  const socket = getSocketFromUserID(recipientId);
-  if (socket) socket.emit("message:read", { by: senderId });
+  const io: Server = getIo();
+  io.to(recipientId.toString()).emit("message:read", { by: senderId });
 }

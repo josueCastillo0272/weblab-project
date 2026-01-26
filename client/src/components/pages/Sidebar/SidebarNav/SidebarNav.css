@@ -11,7 +11,7 @@
 
 .sidebar-logo {
   font-family: Aladin;
-  color: #fff;
+  color: black;
   font-size: 2.5rem;
   margin-bottom: 40px;
   text-align: center;
@@ -32,7 +32,6 @@
   padding: 10px 12px;
   cursor: pointer;
   text-decoration: none;
-  color: #fff;
   transition: background-color 0.2s ease;
 }
 
@@ -41,6 +40,8 @@
 }
 
 .sidebar-item span {
+  color: black;
+
   font-family: "Roboto Flex", sans-serif;
   font-size: 0.95rem;
   white-space: nowrap;
@@ -53,7 +54,6 @@
 }
 
 .sidebar-icon {
-  filter: invert(1);
   pointer-events: none;
 }
 

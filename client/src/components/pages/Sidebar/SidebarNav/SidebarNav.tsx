@@ -14,14 +14,15 @@ const icons = [
   { name: "more", suffix: "menu", path: "/home" },
 ];
 
-export default function SidebarNav() {
+export default function SidebarNav({ overrideState }: { overrideState?: string }) {
   const context = useContext(SidebarContext);
   if (!context) return null;
   const { state } = context;
+  const visualState = overrideState || state;
 
   return (
     <aside className="sidebar-root">
-      <div className="sidebar-logo">{state !== "hidden" ? "Sidequest" : "SQ"}</div>
+      <div className="sidebar-logo">{visualState !== "hidden" ? "Sidequest" : "SQ"}</div>
       <nav className="sidebar-nav">
         {icons.map((item) => (
           <Link key={item.name} to={item.path} className="sidebar-item">
@@ -30,7 +31,9 @@ export default function SidebarNav() {
               alt={item.name}
               className="sidebar-icon"
             />
-            <span>{item.name.charAt(0).toUpperCase() + item.name.slice(1)}</span>
+            {visualState !== "hidden" && (
+              <span>{item.name.charAt(0).toUpperCase() + item.name.slice(1)}</span>
+            )}
           </Link>
         ))}
       </nav>

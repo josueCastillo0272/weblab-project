@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef, useMemo } from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import { Navigate, useOutletContext } from "react-router-dom";
+import { Navigate, useOutletContext, Link } from "react-router-dom";
 import gsap from "gsap";
 import { AuthContext } from "../../../../../shared/types";
 import "./Login.css";
@@ -123,6 +123,9 @@ export default function Login() {
                 shape="pill"
               />
             </div>
+            <Link to="/about" className="minimal-about-link">
+              What is this?
+            </Link>
           </div>
         </div>
       </div>

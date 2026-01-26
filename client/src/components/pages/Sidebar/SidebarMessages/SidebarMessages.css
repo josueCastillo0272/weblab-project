@@ -1,0 +1,81 @@
+.sm-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+.sm-nav-wrapper {
+  flex-shrink: 0;
+}
+.sm-list-container {
+  flex-grow: 1;
+  border-left: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  background: #f0f0f0;
+}
+.sm-search-box {
+  padding: 10px;
+}
+.sm-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #222;
+  color: white;
+}
+.sm-results {
+  background: #222;
+  margin-top: 5px;
+  border-radius: 4px;
+}
+.sm-result-item {
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sm-avatar-small {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-size: cover;
+}
+.sm-list-scroll {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+.sm-conv-item {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sm-avatar-large {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+}
+.sm-conv-text {
+  overflow: hidden;
+}
+.sm-username {
+  font-weight: bold;
+}
+.sm-last-msg {
+  font-size: 0.85em;
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sm-empty {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}

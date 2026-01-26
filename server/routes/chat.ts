@@ -6,6 +6,7 @@ import USER from "../models/User";
 import * as ChatSocket from "../services/ChatSocket";
 
 const router = express.Router();
+
 // Returns messages that correspond to messagers
 router.get("/history", auth.ensureLoggedIn, async (req, res) => {
   try {
@@ -53,7 +54,7 @@ router.post("/message", auth.ensureLoggedIn, async (req, res) => {
 // Find recent conversations
 router.get("/overview", auth.ensureLoggedIn, async (req, res) => {
   try {
-    const userId = req.user!._id;
+    const userId = req.user!._id.toString();
 
     const recentMessages = await MSG.aggregate([
       {
@@ -74,9 +75,14 @@ router.get("/overview", auth.ensureLoggedIn, async (req, res) => {
         },
       },
       {
+        $addFields: {
+          recipientObjId: { $toObjectId: "$_id" },
+        },
+      },
+      {
         $lookup: {
           from: "users",
-          localField: "_id",
+          localField: "recipientObjId",
           foreignField: "_id",
           as: "recipient",
         },
@@ -100,6 +106,7 @@ router.get("/overview", auth.ensureLoggedIn, async (req, res) => {
 
     res.send(recentMessages);
   } catch (error) {
+    console.error(error);
     res.status(500).send({ error: "Failed to retrieve overview" });
   }
 });
