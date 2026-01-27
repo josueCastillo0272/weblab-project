@@ -1,16 +1,15 @@
 import { Schema, model } from "mongoose";
 
 const LikeSchema = new Schema({
-  videoid: { type: String, required: true },
-  likecount: { type: Number, default: 0 },
+  parentid: { type: String, required: true },
+  userid: { type: String, required: true },
 });
 
 export interface Like {
-  videoid: string;
+  parentid: string;
+  userid: string;
   _id: string;
-  likecount: number;
 }
 
 const LikeModel = model<Like>("Like", LikeSchema);
-
 export default LikeModel;

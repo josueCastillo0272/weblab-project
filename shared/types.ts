@@ -9,6 +9,7 @@ export interface User extends Document {
   profilepicture: string;
   default: string;
   activequests: string[];
+  viewed_videos: string[];
 }
 
 export interface Message {

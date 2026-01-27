@@ -13,7 +13,7 @@ export interface Comment {
   commentid: string;
   videoid: string;
   userid: string;
-  parentid?: string | null; // optional
+  parentid?: string | null; // optional for comments, required for replies
   _id: string;
   timestamp?: Date;
 }

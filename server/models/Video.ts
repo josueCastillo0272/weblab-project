@@ -13,5 +13,5 @@ const VideoSchema = new Schema({
   timestamp: { type: Date, default: Date.now },
 });
 
-const VideoModel = model<Video>("Vide", VideoSchema);
+const VideoModel = model<Video>("Video", VideoSchema);
 export default VideoModel;
