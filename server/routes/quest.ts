@@ -42,4 +42,29 @@ router.post("/verify", auth.ensureLoggedIn, async (req, res) => {
   }
 });
 
+// Grab active quests
+router.get("/active", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const user = await User.findOne(req.user._id);
+    const quests = await Quest.find([{ _id: { $in: user?.activequests } }]);
+    // verification-status inside videos. might be bad practice.
+    const videos = await Video.find({
+      userid: req.user!._id,
+      questid: {
+        $in: user?.activequests,
+      },
+    });
+
+    const questwithstatus = quests.map((quest) => {
+      const video = videos.find((v) => v.questid === quest._id.toString());
+      return {
+        ...quest.toObject(),
+        status: video ? video.verification_status : "NOT_STARTED",
+      };
+    });
+    res.send(questwithstatus);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to retrieve quests" });
+  }
+});
 export default router;

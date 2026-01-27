@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useContext, useLayoutEffect } from "react";
-import { useParams, useOutletContext } from "react-router-dom";
+import { useParams, useOutletContext, useNavigate } from "react-router-dom";
 import { get, post } from "../../../utilities";
 import { socket } from "../../../client-socket";
-import { Message, AuthContext } from "../../../../../shared/types";
+import { Message, AuthContext, User } from "../../../../../shared/types";
 import SidebarContext from "../Sidebar/SidebarContext";
 import GifPicker from "../../modules/GifPicker";
 import "./Messages.css";
@@ -11,10 +11,12 @@ export default function Messages() {
   const { recipientId } = useParams();
   const { user } = useOutletContext<AuthContext>();
   const sidebarContext = useContext(SidebarContext);
+  const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [showGifPicker, setShowGifPicker] = useState(false);
+  const [recipient, setRecipient] = useState<User | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Sidebar Logic
@@ -24,9 +26,12 @@ export default function Messages() {
     }
   }, [sidebarContext]);
 
-  // Load History and Initial Join
+  // Load History, Recipient Info, and Initial Join
   useEffect(() => {
     if (recipientId && user?._id) {
+      // Fetch Recipient Details
+      get(`/api/user/${recipientId}`).then((u) => setRecipient(u));
+
       get("/api/history", { recipient: recipientId }).then((msgs) => setMessages(msgs));
       post("/api/read", { recipientid: recipientId });
 
@@ -77,12 +82,28 @@ export default function Messages() {
     });
   };
 
+  const handleProfileClick = () => {
+    if (recipient && recipient.username) {
+      navigate(`/profile/${recipient.username}`);
+    }
+  };
+
   if (!recipientId) return <div className="empty-chat">Select a conversation</div>;
 
   return (
     <div className="chat-container">
       <div className="chat-header">
-        <strong>Chat</strong>
+        {recipient ? (
+          <div className="chat-header-user" onClick={handleProfileClick}>
+            <div
+              className="chat-header-avatar"
+              style={{ backgroundImage: `url(${recipient.profilepicture})` }}
+            />
+            <span className="chat-header-name">{recipient.name}</span>
+          </div>
+        ) : (
+          <strong>Loading...</strong>
+        )}
       </div>
 
       <div className="chat-messages-area">

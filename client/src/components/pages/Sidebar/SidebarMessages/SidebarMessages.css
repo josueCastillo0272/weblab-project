@@ -49,12 +49,16 @@
 }
 .sm-conv-item {
   padding: 10px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #d1d1d1;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
+  transition: background-color 0.2s ease;
+}
+.sm-conv-item:hover {
+  background-color: #e0e0e0;
 }
 .sm-avatar-large {
   width: 40px;
@@ -79,7 +83,7 @@
 }
 .sm-last-msg {
   font-size: 0.85em;
-  color: #aaa;
+  color: #666;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

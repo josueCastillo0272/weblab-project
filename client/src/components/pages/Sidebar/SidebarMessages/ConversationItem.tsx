@@ -12,7 +12,8 @@ export default function ConversationItem({ chat, onSelect }: ConversationItemPro
     if (chat.lastMessageIsGIF) {
       return "Sent a GIF";
     }
-    return chat.lastMessage;
+    const msg = chat.lastMessage;
+    return msg.length > 10 ? `${msg.substring(0, 10)}...` : msg;
   };
 
   const getUnreadBadge = () => {
@@ -28,7 +29,12 @@ export default function ConversationItem({ chat, onSelect }: ConversationItemPro
           <span className="sm-username">{chat.username}</span>
           {getUnreadBadge()}
         </div>
-        <div className="sm-last-msg">{getDisplayText()}</div>
+        <div
+          className="sm-last-msg"
+          title={chat.lastMessageIsGIF ? "Sent a GIF" : chat.lastMessage}
+        >
+          {getDisplayText()}
+        </div>
       </div>
     </div>
   );
