@@ -10,6 +10,7 @@ export interface User extends Document {
   default: string;
   activequests: string[];
   viewed_videos: string[];
+  isAdmin: boolean;
 }
 
 export interface Reaction {
@@ -82,9 +83,9 @@ export interface Video {
 export interface Notification {
   _id: string;
   recipient: string;
-  type: "LIKE" | "COMMENT" | "FOLLOW";
+  type: "LIKE" | "COMMENT" | "FOLLOW" | "QUEST_INVITE";
   senders: string[];
-  relatedId?: string; //either of video or comment
+  relatedId?: string; //either of video or comment or quest id
   previewText?: string;
   read: boolean;
   timestamp: boolean;

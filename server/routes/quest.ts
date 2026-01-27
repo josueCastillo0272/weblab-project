@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/User";
 import Video from "../models/Video";
 import Quest from "../models/Quest";
+import Notification from "../models/Notification";
 import auth from "../auth";
 
 const router = express.Router();
@@ -16,11 +17,11 @@ router.get("/pool", auth.ensureLoggedIn, async (req, res) => {
   }
 });
 
-// Assign quests
+// Self-assign
 router.post("/assign", auth.ensureLoggedIn, async (req, res) => {
   try {
     const { questid } = req.body;
-    const userid = req.user._id;
+    const userid = req.user!._id;
     await User.findByIdAndUpdate(userid, {
       $addToSet: { activequests: questid },
     });
@@ -34,7 +35,7 @@ router.post("/assign", auth.ensureLoggedIn, async (req, res) => {
 router.post("/abandon", auth.ensureLoggedIn, async (req, res) => {
   try {
     const { questid } = req.body;
-    const userid = req.user._id;
+    const userid = req.user!._id;
     await User.findByIdAndUpdate(userid, {
       $pull: { activequests: questid },
     });
@@ -44,9 +45,13 @@ router.post("/abandon", auth.ensureLoggedIn, async (req, res) => {
   }
 });
 
-// Verify quests
+// Verify (Only admins)
 router.post("/verify", auth.ensureLoggedIn, async (req, res) => {
   try {
+    if (!req.user!.isAdmin) {
+      return res.status(403).send({ error: "Unauthorized: Admin access required." });
+    }
+
     const { videoid, statusupdate } = req.body;
     await Video.findByIdAndUpdate(videoid, {
       verification_status: statusupdate,
@@ -54,6 +59,87 @@ router.post("/verify", auth.ensureLoggedIn, async (req, res) => {
     res.send({ success: true });
   } catch (error) {
     res.status(500).send({ error: "Failed to verify video" });
+  }
+});
+
+// Send quest to someone else
+router.post("/invite", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const { recipientId, questId } = req.body;
+    const senderId = req.user!._id;
+
+    if (recipientId === senderId.toString()) {
+      return res.status(400).send({ error: "Cannot invite yourself" });
+    }
+
+    const recipient = await User.findById(recipientId);
+    if (recipient && recipient.activequests.includes(questId)) {
+      return res.status(400).send({ error: "User already has this quest." });
+    }
+
+    const quest = await Quest.findById(questId);
+    const questName = quest ? quest.name : "a quest";
+
+    const notif = new Notification({
+      recipient: recipientId,
+      type: "QUEST_INVITE",
+      senders: [senderId],
+      relatedId: questId,
+      previewText: `challenged you to: ${questName}`,
+    });
+    await notif.save();
+
+    res.send({ success: true });
+  } catch (err) {
+    res.status(500).send({ error: "Failed to send invite" });
+  }
+});
+
+// Accept quest invite
+router.post("/accept", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const { notificationId } = req.body;
+    const notif = await Notification.findById(notificationId);
+
+    if (!notif) return res.status(404).send({ error: "Invite not found" });
+    if (notif.recipient !== req.user!._id.toString()) {
+      return res.status(403).send({ error: "Unauthorized" });
+    }
+    if (notif.type !== "QUEST_INVITE" || !notif.relatedId) {
+      return res.status(400).send({ error: "Invalid invite" });
+    }
+
+    await User.findByIdAndUpdate(req.user!._id, {
+      $addToSet: { activequests: notif.relatedId },
+    });
+
+    notif.read = true;
+    await notif.save();
+
+    res.send({ success: true, questId: notif.relatedId });
+  } catch (err) {
+    res.status(500).send({ error: "Failed to accept invite" });
+  }
+});
+
+// Reject quest
+router.post("/reject", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const { notificationId } = req.body;
+    const notif = await Notification.findById(notificationId);
+
+    if (!notif) return res.status(404).send({ error: "Invite not found" });
+    if (notif.recipient !== req.user!._id.toString()) {
+      return res.status(403).send({ error: "Unauthorized" });
+    }
+
+    // mark as read
+    notif.read = true;
+    await notif.save();
+
+    res.send({ success: true });
+  } catch (err) {
+    res.status(500).send({ error: "Failed to reject invite" });
   }
 });
 

@@ -12,6 +12,7 @@ const UserSchema = new Schema({
   bio: { type: String, default: "" },
   activequests: { type: [String], default: [] },
   viewed_videos: { type: [String], default: [] },
+  isAdmin: { type: Boolean, default: false },
 }).index({ username: "text" });
 const UserModel = model<User>("User", UserSchema);
 
