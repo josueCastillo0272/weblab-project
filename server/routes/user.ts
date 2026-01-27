@@ -5,6 +5,21 @@ import auth from "../auth";
 
 const router = express.Router();
 
+// search users (Explore page)
+router.get("/search", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const query = req.query.name as string;
+    if (!query) return res.send([]);
+
+    const users = await User.find({
+      username: { $regex: query, $options: "i" },
+    }).limit(20);
+
+    res.send(users);
+  } catch (err) {
+    res.status(500).send({ error: "Search failed" });
+  }
+});
 // Grab top 50 users from leaderboard
 router.get("/leaderboard", auth.ensureLoggedIn, async (req, res) => {
   try {

@@ -2,8 +2,8 @@ import express from "express";
 import User from "../models/User";
 import Video from "../models/Video";
 import Quest from "../models/Quest";
-
 import auth from "../auth";
+
 const router = express.Router();
 
 // Grab pool of quests for wheel
@@ -29,7 +29,22 @@ router.post("/assign", auth.ensureLoggedIn, async (req, res) => {
     return res.status(500).send({ error: "Failed to assign quest." });
   }
 });
-// Verify quests - Moderator (Kind of quest/video related but putting here)
+
+// Abandon quests
+router.post("/abandon", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const { questid } = req.body;
+    const userid = req.user._id;
+    await User.findByIdAndUpdate(userid, {
+      $pull: { activequests: questid },
+    });
+    res.send({ success: true });
+  } catch (error) {
+    res.status(500).send({ error: "Failed to abandon quest." });
+  }
+});
+
+// Verify quests
 router.post("/verify", auth.ensureLoggedIn, async (req, res) => {
   try {
     const { videoid, statusupdate } = req.body;
@@ -42,17 +57,17 @@ router.post("/verify", auth.ensureLoggedIn, async (req, res) => {
   }
 });
 
-// Grab active quests
+// Grab quests
 router.get("/active", auth.ensureLoggedIn, async (req, res) => {
   try {
-    const user = await User.findOne(req.user._id);
-    const quests = await Quest.find([{ _id: { $in: user?.activequests } }]);
-    // verification-status inside videos. might be bad practice.
+    const user = await User.findById(req.user!._id);
+    if (!user) return res.status(404).send({ error: "User not found" });
+
+    const quests = await Quest.find({ _id: { $in: user.activequests } });
+
     const videos = await Video.find({
       userid: req.user!._id,
-      questid: {
-        $in: user?.activequests,
-      },
+      questid: { $in: user.activequests },
     });
 
     const questwithstatus = quests.map((quest) => {
@@ -67,4 +82,5 @@ router.get("/active", auth.ensureLoggedIn, async (req, res) => {
     res.status(500).send({ error: "Failed to retrieve quests" });
   }
 });
+
 export default router;

@@ -8,6 +8,8 @@ router.use("/quest", require("./routes/quest").default);
 router.use("/video", require("./routes/video").default);
 router.use("/like", require("./routes/like").default);
 router.use("/comment", require("./routes/comment").default);
+router.use("/follow", require("./routes/follow").default);
+router.use("/notifications", require("./routes/notification").default);
 router.use("/gifs", require("./routes/gifs").default);
 
 router.all("*", (req, res) => {

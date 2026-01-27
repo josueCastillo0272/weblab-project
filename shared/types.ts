@@ -12,6 +12,11 @@ export interface User extends Document {
   viewed_videos: string[];
 }
 
+export interface Reaction {
+  emoji: string;
+  userIds: string[];
+}
+
 export interface Message {
   sender: string;
   recipient: string;
@@ -19,6 +24,8 @@ export interface Message {
   text: string;
   _id: string;
   isGIF: boolean;
+  replyTo?: Message | string;
+  reactions: Reaction[];
   timestamp?: Date;
 }
 
@@ -62,12 +69,23 @@ export interface Quest {
 }
 
 export interface Video {
+  _id: string;
   videoid: string;
   userid: string;
   verified: boolean;
   questid: string;
   videourl: string;
-  _id: string;
   verification_status: Verification;
   timestamp?: Date;
+}
+
+export interface Notification {
+  _id: string;
+  recipient: string;
+  type: "LIKE" | "COMMENT" | "FOLLOW";
+  senders: string[];
+  relatedId?: string; //either of video or comment
+  previewText?: string;
+  read: boolean;
+  timestamp: boolean;
 }

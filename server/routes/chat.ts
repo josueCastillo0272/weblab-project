@@ -15,12 +15,14 @@ router.get("/history", auth.ensureLoggedIn, async (req, res) => {
     const recipientid: string = req.query.recipient as string;
     const senderid: string = req.user._id;
 
-    const messages: Message[] = await MSG.find({
+    const messages = await MSG.find({
       $or: [
         { recipient: recipientid, sender: senderid },
         { recipient: senderid, sender: recipientid },
       ],
-    }).sort({ timestamp: 1 });
+    })
+      .sort({ timestamp: 1 })
+      .populate("replyTo");
 
     return res.send(messages);
   } catch (error) {
@@ -28,26 +30,67 @@ router.get("/history", auth.ensureLoggedIn, async (req, res) => {
   }
 });
 
-// Sends message
+// Sends message/reply
 router.post("/message", auth.ensureLoggedIn, async (req, res) => {
   try {
-    const { recipientid, text, isGIF } = req.body;
+    const { recipientid, text, isGIF, replyToId } = req.body;
     if (!req.user || !req.user._id)
       return res.status(401).send({ error: "User/ User ID was not found" });
     const sender: string = req.user._id;
+
     const newMessage = new MSG({
       sender: sender,
       recipient: recipientid,
       text: text,
       isGIF: isGIF || false,
       timestamp: new Date(),
+      replyTo: replyToId || null,
     });
 
     const savedMessage = await newMessage.save();
-    ChatSocket.sendMessageToRoom(recipientid, sender, savedMessage);
-    return res.send(savedMessage);
+
+    const populatedMessage = await savedMessage.populate("replyTo");
+
+    ChatSocket.sendMessageToRoom(recipientid, sender, populatedMessage);
+    return res.send(populatedMessage);
   } catch (error) {
     return res.status(500).send({ error: "Failed to send message" });
+  }
+});
+
+// React to a message
+router.post("/message/react", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const { messageId, emoji } = req.body;
+    const userId = req.user!._id.toString();
+
+    const message = await MSG.findById(messageId);
+    if (!message) return res.status(404).send({ error: "Message not found" });
+
+    const specificReactionGroup = message.reactions.find((r) => r.emoji === emoji);
+    const alreadyReactedWithThisEmoji =
+      specificReactionGroup && specificReactionGroup.userIds.includes(userId);
+
+    message.reactions.forEach((r) => {
+      r.userIds = r.userIds.filter((id) => id !== userId);
+    });
+
+    message.reactions = message.reactions.filter((r) => r.userIds.length > 0);
+
+    if (!alreadyReactedWithThisEmoji) {
+      const existingReaction = message.reactions.find((r) => r.emoji === emoji);
+      if (existingReaction) {
+        existingReaction.userIds.push(userId);
+      } else {
+        message.reactions.push({ emoji, userIds: [userId] });
+      }
+    }
+
+    await message.save();
+
+    res.send(message);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to react" });
   }
 });
 
@@ -71,7 +114,13 @@ router.get("/overview", auth.ensureLoggedIn, async (req, res) => {
             $cond: [{ $eq: ["$sender", userId] }, "$recipient", "$sender"],
           },
           lastMessage: { $first: "$text" },
+          lastMessageIsGIF: { $first: "$isGIF" },
           timestamp: { $first: "$timestamp" },
+          unreadCount: {
+            $sum: {
+              $cond: [{ $and: [{ $eq: ["$recipient", userId] }, { $eq: ["$read", false] }] }, 1, 0],
+            },
+          },
         },
       },
       {
@@ -94,7 +143,9 @@ router.get("/overview", auth.ensureLoggedIn, async (req, res) => {
         $project: {
           _id: 1,
           lastMessage: 1,
+          lastMessageIsGIF: 1,
           timestamp: 1,
+          unread: "$unreadCount",
           username: "$recipient.username",
           profilepicture: "$recipient.profilepicture",
         },
