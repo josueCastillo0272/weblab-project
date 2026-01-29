@@ -11,7 +11,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #141414;
+  background: linear-gradient(to bottom right, rgb(0, 0, 0), rgb(48, 48, 48));
   font-family: "Inter", sans-serif;
 }
 

@@ -11,6 +11,7 @@ export interface User extends Document {
   activequests: string[];
   viewed_videos: string[];
   isAdmin: boolean;
+  bio: string;
 }
 
 export interface Reaction {

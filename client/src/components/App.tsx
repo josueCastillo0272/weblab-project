@@ -6,6 +6,7 @@ import { get, post } from "../utilities";
 import { socket } from "../client-socket";
 import { User, AuthContext } from "../../../shared/types";
 import "../utilities.css";
+import Loading from "./pages/Loading";
 
 const App = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -30,7 +31,7 @@ const App = () => {
           }
         }
       })
-      .finally(() => setLoading(false));
+      .finally(() => setTimeout(() => setLoading(false), 1000));
   }, []);
 
   const handleLogin = (credentialResponse: CredentialResponse) => {
@@ -61,7 +62,7 @@ const App = () => {
     handleLogout,
   };
 
-  if (loading) return null;
+  if (loading) return <Loading />;
 
   return <Outlet context={authContextValue} />;
 };

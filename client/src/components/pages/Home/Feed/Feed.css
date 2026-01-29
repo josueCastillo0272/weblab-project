@@ -1,0 +1,59 @@
+.feed-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: white;
+  margin: 20px;
+}
+
+.feed-item {
+  border: 2px solid black;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.item-header {
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+}
+
+.video-error {
+  color: red;
+}
+
+.action-bar {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.comments-section {
+  margin-top: 10px;
+}
+
+.comment-list {
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.comment-input-group {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+input[type="text"] {
+  flex-grow: 1;
+  font-family: monospace;
+}
+
+button {
+  font-family: monospace;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid black;
+}
+
+button:active {
+  background-color: black;
+  color: white;
+}

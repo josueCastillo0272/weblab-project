@@ -124,7 +124,7 @@ export default function Login() {
               />
             </div>
             <Link to="/about" className="minimal-about-link">
-              What is this?
+              About
             </Link>
           </div>
         </div>
