@@ -39,7 +39,8 @@ const Sidebar = () => {
 
   return (
     <div className={`sidebar-container ${state}`}>
-      {(state === "normal" || state === "hidden") && <SidebarNav />}
+      <SidebarNav />
+
       {state === "notifs" && <SidebarNotifications />}
       {state === "msgs" && <SidebarMessages />}
 

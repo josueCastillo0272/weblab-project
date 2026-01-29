@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { SidebarMode } from "../../../types";
+import { SidebarMode } from "../../../../../shared/types";
 import Sidebar from "./Sidebar";
 
 interface SidebarContextType {

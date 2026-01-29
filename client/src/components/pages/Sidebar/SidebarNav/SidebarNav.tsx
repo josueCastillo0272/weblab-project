@@ -8,19 +8,18 @@ import "./SidebarNav.css";
 
 const icons = [
   { name: "home", suffix: "home", path: "/home" },
-  { name: "notifications", suffix: "like", path: "/home" },
+  { name: "notifications", suffix: "like", path: "#" },
   { name: "friends", suffix: "conference-call", path: "/search" },
   { name: "messages", suffix: "speech-bubble", path: "/messages" },
   { name: "quests", suffix: "scroll", path: "/quests" },
   { name: "leaderboard", suffix: "trophy", path: "/leaderboard" },
-  { name: "more", suffix: "menu", path: "#" },
+  { name: "logout", suffix: "exit", path: "#" },
 ];
 
 export default function SidebarNav({ overrideState }: { overrideState?: string }) {
   const context = useContext(SidebarContext);
   const { user, handleLogout } = useOutletContext<AuthContext>();
   const [unreadTotal, setUnreadTotal] = useState(0);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUnread = () => {
@@ -42,10 +41,12 @@ export default function SidebarNav({ overrideState }: { overrideState?: string }
   const visualState = overrideState || state;
 
   const handleItemClick = (name: string) => {
-    if (name === "more") {
+    if (name === "logout") {
       handleLogout();
     } else if (name === "notifications") {
-      setState("notifs");
+      setState(state === "notifs" ? "normal" : "notifs");
+    } else {
+      if (state !== "hidden") setState("normal");
     }
   };
 

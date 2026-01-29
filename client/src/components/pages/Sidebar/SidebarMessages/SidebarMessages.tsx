@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { get } from "../../../../utilities";
 import { socket } from "../../../../client-socket";
 import { ChatOverview, SearchResult } from "../../../../../../shared/types";
-import SidebarNav from "../SidebarNav/SidebarNav";
 import SearchUser from "./SearchUser";
 import ConversationList from "./ConversationList";
 import "./SidebarMessages.css";
@@ -40,10 +39,6 @@ export default function SidebarMessages() {
 
   return (
     <div className="sm-container">
-      <div className="sm-nav-wrapper">
-        <SidebarNav overrideState="hidden" />
-      </div>
-
       <div className="sm-list-container">
         <SearchUser
           searchQuery={searchQuery}

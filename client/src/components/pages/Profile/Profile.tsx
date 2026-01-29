@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams, useOutletContext } from "react-router-dom";
 import { get, post } from "../../../utilities";
-import { User } from "../../../../../shared/types";
+import { User, AuthContext } from "../../../../../shared/types";
 import Loading from "../Loading";
 import "./Profile.css";
 
@@ -13,13 +13,26 @@ interface Quest {
 
 export default function Profile() {
   const { username } = useParams();
+  const { userId: currentUserId } = useOutletContext<AuthContext>();
   const [user, setUser] = useState<User | undefined>(undefined);
   const [quests, setQuests] = useState<Quest[]>([]);
   const [selectedQuest, setSelectedQuest] = useState<string>("");
 
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+
   useEffect(() => {
     if (username) {
-      get(`/api/user/username/${username}`).then((userdata) => setUser(userdata));
+      get(`/api/user/username/${username}`).then((userdata) => {
+        setUser(userdata);
+        if (userdata) {
+          // Fetch follow data
+          get(`/api/follow/status/${userdata._id}`).then((res) => setIsFollowing(res.following));
+          get(`/api/follow/${userdata._id}/followers`).then((res) => setFollowersCount(res.length));
+          get(`/api/follow/${userdata._id}/following`).then((res) => setFollowingCount(res.length));
+        }
+      });
     }
   }, [username]);
 
@@ -29,6 +42,14 @@ export default function Profile() {
       if (data.length > 0) setSelectedQuest(data[0]._id);
     });
   }, []);
+
+  const handleFollowToggle = () => {
+    if (!user) return;
+    post("/api/follow/toggle", { followingid: user._id }).then((res) => {
+      setIsFollowing(res.following);
+      setFollowersCount((prev) => prev + (res.following ? 1 : -1));
+    });
+  };
 
   const handleChallenge = () => {
     if (!user || !selectedQuest) return;
@@ -47,8 +68,24 @@ export default function Profile() {
     <div className="profile-container">
       <h1>{user.username}'s Profile</h1>
       <img src={user.profilepicture} alt="profile" className="profile-pic" />
+
+      <div className="profile-stats">
+        <span>
+          <strong>{followersCount}</strong> Followers
+        </span>
+        <span>
+          <strong>{followingCount}</strong> Following
+        </span>
+      </div>
+
+      {currentUserId && currentUserId !== user._id && (
+        <button className="profile-follow-btn" onClick={handleFollowToggle}>
+          {isFollowing ? "Unfollow" : "Follow"}
+        </button>
+      )}
+
       <p>
-        <strong>Bio:</strong> {user.bio || "No bio yet."}
+        <strong>Bio:</strong> {user.bio || ""}
       </p>
       <hr />
       <div className="challenge-box">
