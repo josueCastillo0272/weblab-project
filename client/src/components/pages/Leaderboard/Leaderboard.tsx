@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { get } from "../../../utilities";
+import "./Leaderboard.css";
 
 interface LeaderboardEntry {
   _id: string;
@@ -18,15 +19,29 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div>
-      <h3>Leaderboard</h3>
-      <ul>
-        {leaders.map((entry, index) => (
-          <li key={entry._id}>
-            {index + 1}. {entry.username} - {entry.count} verified quests
-          </li>
-        ))}
-      </ul>
+    <div className="leaderboard-container">
+      <h3>Top 50 Questers</h3>
+      <table className="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            <th>Verified Quests</th>
+          </tr>
+        </thead>
+        <tbody>
+          {leaders.map((entry, index) => (
+            <tr key={entry._id}>
+              <td>{index + 1}</td>
+              <td className="lb-user">
+                <img src={entry.profilepicture} alt="avi" className="lb-avi" />
+                {entry.username}
+              </td>
+              <td>{entry.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

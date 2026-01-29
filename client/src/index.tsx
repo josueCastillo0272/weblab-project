@@ -8,6 +8,7 @@ import Search from "./components/pages/Search/Search";
 import Leaderboard from "./components/pages/Leaderboard/Leaderboard";
 import Quests from "./components/pages/Quests/Quests";
 import Profile from "./components/pages/Profile/Profile";
+import Settings from "./components/pages/Settings/Settings";
 import AppLayout from "./components/pages/AppLayout";
 import RequireAuth from "./components/RequireAuth";
 import NotFound from "./components/pages/NotFound";
@@ -31,7 +32,7 @@ export const router = createBrowserRouter([
         element: <RequireAuth />,
         children: [
           {
-            element: <AppLayout />, // contains sidebar in here
+            element: <AppLayout />,
             children: [
               { path: "home", element: <Home /> },
               { path: "newquest", element: <NewQuest /> },
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
               { path: "leaderboard", element: <Leaderboard /> },
               { path: "quests", element: <Quests /> },
               { path: "profile/:username", element: <Profile /> },
+              { path: "settings", element: <Settings /> },
             ],
           },
         ],

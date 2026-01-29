@@ -1,0 +1,52 @@
+.settings-container {
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.settings-container h2 {
+  border-bottom: 1px solid #000;
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-form label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.settings-form input,
+.settings-form textarea {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.settings-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.save-btn {
+  padding: 12px;
+  margin-top: 16px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  align-self: flex-start;
+}
+
+.save-btn:hover {
+  opacity: 0.8;
+}
