@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { get, post } from "../../../../utilities";
 import YouTubeEmbed from "../../../modules/YouTubeEmbed";
 import CommentSection from "../../../modules/CommentSection";
-import "../pages/Home/Feed/Feed.css"; // Reuse existing styles
-
+import "./Feed.css";
 interface Video {
   _id: string;
   videourl: string;

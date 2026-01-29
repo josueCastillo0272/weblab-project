@@ -3,6 +3,9 @@
   margin: 0 auto;
   background-color: white;
   margin: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .feed-item {
